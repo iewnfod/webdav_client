@@ -403,6 +403,14 @@ class WdDio with DioMixin implements Dio {
       }
     }
 
+    Future _close() async {
+      if (!closed) {
+        closed = true;
+        await asyncWrite;
+        await raf.close();
+      }
+    }
+
     subscription = stream.listen(
       (data) {
         subscription.pause();
@@ -443,7 +451,7 @@ class WdDio with DioMixin implements Dio {
       },
       onError: (e) async {
         try {
-          await _closeAndDelete();
+          await _close();
         } finally {
           completer.completeError(DioError(
             requestOptions: resp.requestOptions,
@@ -457,7 +465,7 @@ class WdDio with DioMixin implements Dio {
     // ignore: unawaited_futures
     cancelToken?.whenCancel.then((_) async {
       await subscription.cancel();
-      await _closeAndDelete();
+      await _close();
     });
 
     if (resp.requestOptions.receiveTimeout != null &&
@@ -468,7 +476,7 @@ class WdDio with DioMixin implements Dio {
           .timeout(resp.requestOptions.receiveTimeout!)
           .catchError((Object err) async {
         await subscription.cancel();
-        await _closeAndDelete();
+        await _close();
         if (err is TimeoutException) {
           throw DioError(
             requestOptions: resp.requestOptions,
