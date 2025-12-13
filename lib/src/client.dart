@@ -171,6 +171,7 @@ class Client {
     String savePath, {
     void Function(int count, int total)? onProgress,
     CancelToken? cancelToken,
+    Options? options,
   }) async {
     await this.c.wdReadWithStream(
           this,
@@ -178,6 +179,7 @@ class Client {
           savePath,
           onProgress: onProgress,
           cancelToken: cancelToken,
+          options: options,
         );
   }
 
