@@ -78,9 +78,13 @@ class WdDio with DioMixin implements Dio {
       options.headers?['authorization'] = str;
     }
 
+    final u = Uri.parse(
+        '${path.startsWith(RegExp(r'(http|https)://')) ? path : join(self.uri, path)}');
+
+    print("Sending request: ${options.method} => $u");
+
     var resp = await this.requestUri<T>(
-      Uri.parse(
-          '${path.startsWith(RegExp(r'(http|https)://')) ? path : join(self.uri, path)}'),
+      u,
       options: options,
       data: data,
       onSendProgress: onSendProgress,
