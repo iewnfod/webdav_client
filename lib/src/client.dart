@@ -226,6 +226,13 @@ class Client {
     await this.c.wdMkcol(this, k);
     return k;
   }
+
+  Future<void> combineUploadChunk(
+      String chunkKey, String destPath, bool overwrite) async {
+    await this
+        .c
+        .wdCopyMove(this, "$chunkKey/.file", destPath, false, overwrite);
+  }
 }
 
 /// create new client
