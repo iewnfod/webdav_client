@@ -534,6 +534,7 @@ class WdDio with DioMixin implements Dio {
     int length, {
     void Function(int count, int total)? onProgress,
     CancelToken? cancelToken,
+    Options? options,
   }) async {
     // fix auth error
     var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
@@ -549,7 +550,42 @@ class WdDio with DioMixin implements Dio {
       'PUT',
       path,
       data: data,
-      optionsHandler: (options) => options.headers?['content-length'] = length,
+      optionsHandler: (requestOptions) {
+        requestOptions.responseType = ResponseType.stream;
+        if (options != null) {
+          requestOptions.method = options.method ?? requestOptions.method;
+          requestOptions.sendTimeout =
+              options.sendTimeout ?? requestOptions.sendTimeout;
+          requestOptions.receiveTimeout =
+              options.receiveTimeout ?? requestOptions.receiveTimeout;
+          requestOptions.extra?.addAll(options.extra ?? {});
+          requestOptions.headers?.addAll(options.headers ?? {});
+          requestOptions.preserveHeaderCase =
+              options.preserveHeaderCase ?? requestOptions.preserveHeaderCase;
+          requestOptions.responseType =
+              options.responseType ?? requestOptions.responseType;
+          requestOptions.contentType =
+              options.contentType ?? requestOptions.contentType;
+          requestOptions.validateStatus =
+              options.validateStatus ?? requestOptions.validateStatus;
+          requestOptions.receiveDataWhenStatusError =
+              options.receiveDataWhenStatusError ??
+                  requestOptions.receiveDataWhenStatusError;
+          requestOptions.followRedirects =
+              options.followRedirects ?? requestOptions.followRedirects;
+          requestOptions.maxRedirects =
+              options.maxRedirects ?? requestOptions.maxRedirects;
+          requestOptions.persistentConnection = options.persistentConnection ??
+              requestOptions.persistentConnection;
+          requestOptions.requestEncoder =
+              options.requestEncoder ?? requestOptions.requestEncoder;
+          requestOptions.responseDecoder =
+              options.responseDecoder ?? requestOptions.responseDecoder;
+          requestOptions.listFormat =
+              options.listFormat ?? requestOptions.listFormat;
+        }
+        return requestOptions;
+      },
       onSendProgress: onProgress,
       cancelToken: cancelToken,
     );

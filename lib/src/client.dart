@@ -205,6 +205,7 @@ class Client {
     String path, {
     void Function(int count, int total)? onProgress,
     CancelToken? cancelToken,
+    Options? options,
   }) async {
     var file = io.File(localFilePath);
     return this.c.wdWriteWithStream(
@@ -214,6 +215,7 @@ class Client {
           file.lengthSync(),
           onProgress: onProgress,
           cancelToken: cancelToken,
+          options: options,
         );
   }
 }
