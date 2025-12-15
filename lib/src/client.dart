@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:uuid/v1.dart';
 import 'dart:io' as io;
 import 'auth.dart';
 import 'file.dart';
@@ -217,6 +218,13 @@ class Client {
           cancelToken: cancelToken,
           options: options,
         );
+  }
+
+  Future<String> createUploadChunk() async {
+    final id = UuidV1().generate();
+    final k = "web-file-upload-$id";
+    await this.c.wdMkcol(this, k);
+    return k;
   }
 }
 
